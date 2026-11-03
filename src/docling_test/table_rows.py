@@ -35,31 +35,41 @@ ROW_CHUNK_COLUMNS = [
     "row_serialized",
     "caption",
 ]
+"""Cette liste définit les dix colonnes du DataFrame final.
+table_id	Identifiant du tableau
+page_num	Numéro de page PDF
+row_index	Numéro de la ligne dans le tableau
+line_num	Numéro de ligne source, ici non disponible
+n_rows	Nombre de lignes de données du tableau
+n_cols	Nombre de colonnes
+column_headers	En-têtes des colonnes
+row_cells	Valeurs des cellules
+row_serialized	Ligne convertie en texte
+caption	Légende du tableau"""
 
 #: Columns holding Python lists; JSON-encoded when exporting to CSV.
 LIST_COLUMNS = ("column_headers", "row_cells")
 
-_WHITESPACE_RE = re.compile(r"\s+")
-
-
-# ---------------------------------------------------------------------------
-# Small helpers
-# ---------------------------------------------------------------------------
+_WHITESPACE_RE = re.compile(
+    r"\s+"
+)  # outil de recherche qui reconnaît toutes les suites de caractères blancs.
 
 
 def normalize_headers(
-    headers: Sequence[str],
-    n_cols: int | None = None,
+    headers: Sequence[str],  # noms des colonnes.
+    n_cols: int | None = None,  # nombre de colonnes attendu, facultatif.
 ) -> list[str]:
     """Clean, de-duplicate and pad/truncate headers to ``n_cols`` columns."""
-    cleaned: list[str] = []
-    seen: dict[str, int] = {}
+    cleaned: list[str] = []  # contiendra les en-têtes nettoyés
+    seen: dict[str, int] = {}  # mémorisera le nombre d'occurrences de chaque nom
 
     for index, header in enumerate(headers):
         name = _WHITESPACE_RE.sub(" ", str(header).replace("\n", " ")).strip()
-        if not name:
+        if not name:  # Si un en-tête est vide, on lui attribue un nom automatique.
             name = f"col_{index + 1}"
-        count = seen.get(name, 0) + 1
+        count = (
+            seen.get(name, 0) + 1
+        )  # .get() récupère la valeur associée à une clé. Si la clé n'existe pas, il retourne 0.
         seen[name] = count
         if count > 1:
             unique = f"{name}_{count}"
@@ -70,14 +80,18 @@ def normalize_headers(
             name = unique
         cleaned.append(name)
 
-    if n_cols is not None:
+    if (
+        n_cols is not None
+    ):  # S'il manque des en-têtes, on ajoute des noms artificiels. S'il y en a trop, on les supprime.
         if len(cleaned) < n_cols:
             cleaned.extend(f"col_{i + 1}" for i in range(len(cleaned), n_cols))
         cleaned = cleaned[:n_cols]
     return cleaned
 
 
-def _clean_cell(value: Any) -> str:
+def _clean_cell(
+    value: Any,
+) -> str:  # Cette fonction nettoie une cellule d'un DataFrame.
     """Turn a DataFrame cell into a compact, stripped string."""
     if value is None:
         return ""
@@ -92,12 +106,19 @@ def _clean_cell(value: Any) -> str:
 def _serialize_pairs(headers: Sequence[str], cells: Sequence[str]) -> str:
     """Serialize one row as ``Header: value | Header: value``."""
     return " | ".join(
-        f"{header}: {cell}" for header, cell in zip(headers, cells, strict=False)
+        f"{header}: {cell}"
+        for header, cell in zip(
+            headers, cells, strict=False
+        )  # zip() associe les éléments de deux séquences position par position.
     )
 
 
+# Pour chaque paire, on construit une chaîne de caractères, puis on assemble les chaînes avec | comme séparateur.
+# strict=False autorise des séquences de longueurs différentes : l'itération s'arrête à la séquence la plus courte.
+
+
 def _make_chunk(
-    *,
+    *,  # impose d'utiliser des arguments nommés
     table_id: str,
     page_num: int | None,
     row_index: int,
@@ -107,9 +128,11 @@ def _make_chunk(
     cells: Sequence[str],
     caption: str = "",
 ) -> dict[str, Any]:
-    n_cols = len(headers)
-    padded = list(cells[:n_cols]) + [""] * max(0, n_cols - len(cells))
-    return {
+    n_cols = len(headers)  # Si on a trois en-têtes, on a trois colonnes
+    padded = list(cells[:n_cols]) + [""] * max(
+        0, n_cols - len(cells)
+    )  # garantit que le nombre de cellules correspond au nombre de colonnes
+    return {  # Chaque chunk est un dictionnaire Python
         "table_id": table_id,
         "page_num": page_num,
         "row_index": row_index,
@@ -128,20 +151,29 @@ def _make_chunk(
 # ---------------------------------------------------------------------------
 
 
-def _table_caption(table: Any, doc: Any) -> str:
-    if doc is None or not hasattr(table, "caption_text"):
+def _table_caption(
+    table: Any, doc: Any
+) -> str:  # Cette fonction récupère la légende du tableau. La légende peut améliorer la compréhension d'un chunk lorsqu'il est récupéré indépendamment du tableau original.
+    if (
+        doc is None or not hasattr(table, "caption_text")
+    ):  # vérifie que le document existe et que l'objet table possède une méthode caption_text
         return ""
     try:
         return _clean_cell(table.caption_text(doc))
     except Exception:
-        return ""
+        return ""  # Si une erreur survient, retourne une chaîne vide
 
 
 def _table_page(table: Any) -> int | None:
-    provenance = getattr(table, "prov", None) or []
+    provenance = (
+        getattr(table, "prov", None) or []
+    )  # getattr() récupère l'attribut prov ; s'il n'existe pas, il retourne None. Remplace une valeur absente ou vide par une liste vide.
     if not provenance:
         return None
     return getattr(provenance[0], "page_no", None)
+
+
+# La provenance permet de conserver la page PDF d'où provient le tableau.
 
 
 def table_to_row_chunks(
@@ -151,7 +183,7 @@ def table_to_row_chunks(
     *,
     include_caption: bool = True,
 ) -> list[dict[str, Any]]:
-    """Turn one Docling ``TableItem`` into one chunk per body row."""
+    """Turn one Docling ``TableItem`` into one chunk per body row. Cette fonction transforme un seul tableau Docling en plusieurs chunks."""
     frame = table.export_to_dataframe(doc=doc)
     if frame is None or frame.empty:
         return []

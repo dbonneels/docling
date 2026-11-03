@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "docling>=2.145.0",
+    "streamlit>=1.66.1",
 ]
 
 [project.scripts]

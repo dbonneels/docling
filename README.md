@@ -6,11 +6,10 @@ Instead of indexing a whole table as one chunk, each **body row** becomes its
 own retrievable chunk, with the column headers copied into the text:
 
 ```text
-Layer Type: Self-Attention | Complexity per Layer: O(n^2)
+Global Warming Between 1850-1900 and 2010-2019 (°C).1.07 (0.8-1.3; likely range).Approximate global warming relative to 1850-1900 until temperature limit (°C): 1.5 | Global Warming Between 1850-1900 and 2010-2019 (°C).1.07 (0.8-1.3; likely range).a Additional global warming relative 2010-2019 until perature limit (°C): 0.43 | Historical Cumulative CO2 Emissions from 1850 to 2019 (GtCO2).2390 (± 240; likely range).to tem- Estimated from the Likelihood to temperature 17%: 900 | Historical Cumulative CO2 Emissions from 1850 to 2019 (GtCO2).2390 (± 240; likely range).remaining beginning of 2020 of limiting global limit b 33%: 650 | Historical Cumulative CO2 Emissions from 1850 to 2019 (GtCO2).2390 (± 240; likely range).budgets (GtCO2) warming 50%: 500 | Historical Cumulative CO2 Emissions from 1850 to 2019 (GtCO2).2390 (± 240; likely range).67%: 400 | Historical Cumulative CO2 Emissions from 1850 to 2019 (GtCO2).2390 (± 240; likely range).83%: 300 | Historical Cumulative CO2 Emissions from 1850 to 2019 (GtCO2).Variations in reductions in non-CO2 emissions c.Variations in reductions in non-CO2 emissions c: Higher or lower reductions in accompanying non-CO2 emissions can increase or decrease the values on the left by 220 GtCO2 or more
 ```
 
-That way a targeted question ("what is the complexity of self-attention?")
-retrieves the one row that answers it, not the entire table.
+That way a targeted question retrieves the one row that answers it, not the entire table.
 
 This is an implementation of the approach described in
 [Retrieve One Row from a Table, Not the Whole Table](https://towardsdatascience.com/retrieve-one-row-from-a-table-not-the-whole-table-row-level-chunks-for-rag/).

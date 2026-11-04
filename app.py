@@ -33,6 +33,7 @@ st.markdown(
 )
 
 st.title("📊 Row-Level Table Chunks for RAG")
+st.sidebar.markdown("🟢 **Status: Live**")
 st.markdown(
     "Convert PDFs with **Docling** and extract **one retrievable chunk per table body row**. "
     "Column headers stay with the values so each row reads like a self-contained sentence."

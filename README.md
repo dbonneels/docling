@@ -1,5 +1,7 @@
 # docling-test
 
+[![Status](https://img.shields.io/badge/Status-Live-brightgreen)](https://github.com/dbonneels/docling)
+
 Row-level table chunks for RAG, built on top of [Docling](https://github.com/docling-project/docling).
 
 Instead of indexing a whole table as one chunk, each **body row** becomes its

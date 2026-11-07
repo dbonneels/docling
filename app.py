@@ -1,4 +1,3 @@
-import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -39,28 +38,19 @@ st.markdown(
     "Column headers stay with the values so each row reads like a self-contained sentence."
 )
 
-# Sidebar - Settings & File Upload
+# Sidebar - Source PDF
+# Public demo: only the bundled sample is served; visitor uploads are disabled
+# to keep CPU/RAM usage predictable on the shared host.
 st.sidebar.header("Source PDF")
-upload_option = st.sidebar.radio(
-    "Choose input source:",
-    ("Use sample PDF (IPCC SPM)", "Upload your own PDF"),
-)
 
 sample_pdf = Path("data/raw/IPCC_AR6_WGI_SPM-25-29.pdf")
 pdf_path = None
 
-if upload_option == "Use sample PDF (IPCC SPM)":
-    if sample_pdf.exists():
-        pdf_path = sample_pdf
-        st.sidebar.success(f"Using `{sample_pdf.name}`")
-    else:
-        st.sidebar.error("Sample PDF not found.")
+if sample_pdf.exists():
+    pdf_path = sample_pdf
+    st.sidebar.success(f"Using `{sample_pdf.name}`")
 else:
-    uploaded_file = st.sidebar.file_uploader("Upload a PDF file", type=["pdf"])
-    if uploaded_file is not None:
-        temp_dir = tempfile.mkdtemp()
-        pdf_path = Path(temp_dir) / uploaded_file.name
-        pdf_path.write_bytes(uploaded_file.read())
+    st.sidebar.error("Sample PDF not found.")
 
 include_caption = st.sidebar.checkbox("Include table captions", value=True)
 

@@ -11,3 +11,6 @@ wheels/
 
 # Generated row chunks
 output/
+
+# Docling/HuggingFace model cache mounted into the container (~500 MB)
+model-cache/

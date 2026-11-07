@@ -17,6 +17,8 @@ services:
     environment:
       # Serve the app under https://bonneels.net/docling-demo/ (Apache proxy)
       STREAMLIT_SERVER_BASE_URL_PATH: docling-demo
+      # Soupape: visitor uploads capped at 1 MB (a converted PDF peaks ~1.9 GB RSS)
+      STREAMLIT_SERVER_MAX_UPLOAD_SIZE: "1"
       # Accept the WebSocket handshake coming from the portfolio origin
       STREAMLIT_SERVER_CORS_ALLOWED_ORIGINS: "https://bonneels.net https://www.bonneels.net"
       # Model cache location (see volume above)

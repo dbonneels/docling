@@ -24,6 +24,16 @@ st.markdown(
             background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 100%);
         }
         .stApp, .stApp * { color: #3a2e00; }
+        /* La couleur sombre n'est pas appliquée aux boutons, qui gardent le style Streamlit */
+        button, [data-testid*="Button"], [data-testid*="button"] {
+            color: revert !important;
+        }
+        button * {
+            color: revert !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+            color: #3a2e00 !important;
+        }
         .stMetric { background: rgba(255,255,255,0.55); border-radius: 12px; padding: 12px; color: #3a2e00; }
         h1, h2, h3 { color: #4a3300 !important; text-shadow: 0 2px 6px rgba(255,255,255,0.45); }
         .stDataFrame { background: rgba(255,255,255,0.35); border-radius: 10px; color: #3a2e00; }
@@ -52,7 +62,7 @@ pdf_path = None
 if upload_option == "Use sample PDF (IPCC SPM)":
     if sample_pdf.exists():
         pdf_path = sample_pdf
-        st.sidebar.success(f"Using `{sample_pdf.name}`")
+        st.sidebar.success(f"Using {sample_pdf.name}")
     else:
         st.sidebar.error("Sample PDF not found.")
 else:
@@ -61,6 +71,20 @@ else:
         temp_dir = tempfile.mkdtemp()
         pdf_path = Path(temp_dir) / uploaded_file.name
         pdf_path.write_bytes(uploaded_file.read())
+
+if pdf_path is not None and pdf_path.exists():
+    pdf_bytes = pdf_path.read_bytes()
+    st.sidebar.markdown(
+        f'<span style="color:#3a2e00; font-weight:600;">Fichier source : {pdf_path.name}</span>',
+        unsafe_allow_html=True,
+    )
+    st.sidebar.download_button(
+        label="📥 Télécharger le PDF",
+        data=pdf_bytes,
+        file_name=pdf_path.name,
+        mime="application/pdf",
+        use_container_width=True,
+    )
 
 include_caption = st.sidebar.checkbox("Include table captions", value=True)
 
@@ -89,7 +113,7 @@ if pdf_path:
         st.markdown("---")
 
         # Search filter
-        query = st.text_input("🔍 Search within row chunks (`row_serialized`):", "")
+        query = st.text_input("🔍 Search within row chunks (row_serialized):", "")
         if query:
             filtered_df = search_rows(rows_df, query)
             st.caption(f"Showing {len(filtered_df)} hit(s) for query: **{query}**")
@@ -112,22 +136,23 @@ if pdf_path:
 
         # Downloads
         st.subheader("Export Options")
-        dl_col1, dl_col2 = st.columns(2)
+        dl_container = st.container(horizontal=True, gap="small")
 
         jsonl_data = rows_df.to_json(orient="records", lines=True, force_ascii=False)
-        dl_col1.download_button(
-            label="📥 Download JSONL",
-            data=jsonl_data,
-            file_name=f"{pdf_path.stem}_rows.jsonl",
-            mime="application/jsonlines",
-        )
+        with dl_container:
+            st.download_button(
+                label="📥 Download JSONL",
+                data=jsonl_data,
+                file_name=f"{pdf_path.stem}_rows.jsonl",
+                mime="application/jsonlines",
+            )
 
-        csv_data = rows_df.to_csv(index=False)
-        dl_col2.download_button(
-            label="📥 Download CSV",
-            data=csv_data,
-            file_name=f"{pdf_path.stem}_rows.csv",
-            mime="text/csv",
-        )
+            csv_data = rows_df.to_csv(index=False)
+            st.download_button(
+                label="📥 Download CSV",
+                data=csv_data,
+                file_name=f"{pdf_path.stem}_rows.csv",
+                mime="text/csv",
+            )
     else:
         st.warning("No tables were detected in the PDF.")

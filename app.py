@@ -72,6 +72,7 @@ sample_pdfs = {
 upload_option = st.sidebar.radio(
     "Choose input source:",
     tuple(sample_pdfs.keys()) + ("Upload your own PDF",),
+    index=1,
 )
 
 pdf_path = None

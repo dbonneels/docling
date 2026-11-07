@@ -189,7 +189,7 @@ if pdf_path:
 
             csv_data = rows_df.to_csv(index=False)
             st.download_button(
-                label="📥 Download CSV",
+                label="💾 Download CSV",
                 data=csv_data,
                 file_name=f"{pdf_path.stem}_rows.csv",
                 mime="text/csv",

@@ -65,7 +65,7 @@ st.markdown(
 # Sidebar - Settings & File Upload
 st.sidebar.header("Source PDF")
 sample_pdfs = {
-    "Use sample PDF (sample report with captions)": Path("data/raw/report_with_captions.pdf"),
+    "Use sample PDF (report with captions)": Path("data/raw/report_with_captions.pdf"),
     "Use sample PDF (IPCC SPM)": Path("data/raw/IPCC_AR6_WGI_SPM-25-29.pdf"),
 }
 

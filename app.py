@@ -1,3 +1,4 @@
+import html
 import tempfile
 from pathlib import Path
 
@@ -29,6 +30,12 @@ st.markdown(
             color: revert !important;
         }
         button * {
+            color: revert !important;
+        }
+        input, textarea, [data-baseweb="input"], [data-baseweb="textarea"], [data-baseweb="select"] {
+            color: revert !important;
+        }
+        input *, textarea *, [data-baseweb="input"] *, [data-baseweb="textarea"] *, [data-baseweb="select"] * {
             color: revert !important;
         }
         [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
@@ -125,14 +132,40 @@ if pdf_path:
         selected_columns = st.multiselect(
             "Select columns to display:",
             options=rows_df.columns.tolist(),
-            default=["table_id", "page_num", "row_index", "row_serialized"],
+            default=["row_serialized"],
         )
 
-        st.dataframe(
-            filtered_df[selected_columns],
-            use_container_width=True,
-            hide_index=True,
-        )
+        if selected_columns and not filtered_df.empty:
+            narrow = {"table_id", "page_num", "row_index"}
+            table_parts = [
+                '<style>',
+                '.docling-table-wrap { max-height: 520px; overflow: auto; border-radius: 10px; }',
+                '.docling-table { table-layout: fixed; width: 100%; border-collapse: collapse; font-size: 0.85rem; }',
+                '.docling-table th, .docling-table td { border: 1px solid #d7c08a; padding: 4px 6px; vertical-align: top; }',
+                '.docling-table thead th { background: #ffd54f; color: #3a2e00; position: sticky; top: 0; }',
+                '.docling-table td { background: rgba(255,255,255,0.35); color: #3a2e00; word-break: break-word; overflow-wrap: anywhere; }',
+                '.docling-table .col-table_id, .docling-table .col-page_num, .docling-table .col-row_index { width: 48px; text-align: center; }',
+                '</style>',
+                '<div class="docling-table-wrap"><table class="docling-table"><colgroup>',
+            ]
+            for col in selected_columns:
+                table_parts.append(f'<col class="col-{html.escape(col)}">')
+            table_parts.append('</colgroup><thead><tr>')
+            for col in selected_columns:
+                table_parts.append(f'<th class="col-{html.escape(col)}">{html.escape(str(col))}</th>')
+            table_parts.append('</tr></thead><tbody>')
+            for record in filtered_df[selected_columns].itertuples(index=False):
+                table_parts.append('<tr>')
+                for idx, col in enumerate(selected_columns):
+                    value = record[idx]
+                    table_parts.append(
+                        f'<td class="col-{html.escape(col)}">{html.escape("" if value is None else str(value))}</td>'
+                    )
+                table_parts.append('</tr>')
+            table_parts.append('</tbody></table></div>')
+            st.markdown("".join(table_parts), unsafe_allow_html=True)
+        elif selected_columns:
+            st.warning("No rows to display.")
 
         # Downloads
         st.subheader("Export Options")

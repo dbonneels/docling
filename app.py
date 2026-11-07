@@ -32,10 +32,18 @@ st.markdown(
         button * {
             color: revert !important;
         }
-        input, textarea, [data-baseweb="input"], [data-baseweb="textarea"], [data-baseweb="select"] {
+        .stApp input,
+        .stApp textarea,
+        .stApp [data-baseweb="input"],
+        .stApp [data-baseweb="textarea"],
+        .stApp [data-baseweb="select"],
+        .stApp [data-baseweb="input"] input,
+        .stApp [data-baseweb="textarea"] textarea {
             color: revert !important;
         }
-        input *, textarea *, [data-baseweb="input"] *, [data-baseweb="textarea"] *, [data-baseweb="select"] * {
+        .stApp [data-baseweb="input"] *,
+        .stApp [data-baseweb="textarea"] *,
+        .stApp [data-baseweb="select"] * {
             color: revert !important;
         }
         [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {

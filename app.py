@@ -65,14 +65,14 @@ st.markdown(
 # Sidebar - Settings & File Upload
 st.sidebar.header("Source PDF")
 sample_pdfs = {
-    "Use sample PDF (IPCC SPM)": Path("data/raw/IPCC_AR6_WGI_SPM-25-29.pdf"),
     "Use sample PDF (sample report with captions)": Path("data/raw/report_with_captions.pdf"),
+    "Use sample PDF (IPCC SPM)": Path("data/raw/IPCC_AR6_WGI_SPM-25-29.pdf"),
 }
 
 upload_option = st.sidebar.radio(
     "Choose input source:",
     tuple(sample_pdfs.keys()) + ("Upload your own PDF",),
-    index=1,
+    index=0,
 )
 
 pdf_path = None

@@ -11,3 +11,6 @@ wheels/
 
 # Generated row chunks
 output/
+
+# Windows mark-of-the-web
+*:Zone.Identifier

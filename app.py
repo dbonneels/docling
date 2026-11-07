@@ -93,7 +93,7 @@ if pdf_path is not None and pdf_path.exists():
         unsafe_allow_html=True,
     )
     st.sidebar.download_button(
-        label="📥 Télécharger le PDF",
+        label="💾 Télécharger le PDF",
         data=pdf_bytes,
         file_name=pdf_path.name,
         mime="application/pdf",

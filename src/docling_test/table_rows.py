@@ -27,7 +27,6 @@ ROW_CHUNK_COLUMNS = [
     "table_id",
     "page_num",
     "row_index",
-    "line_num",
     "n_rows",
     "n_cols",
     "column_headers",
@@ -39,7 +38,7 @@ ROW_CHUNK_COLUMNS = [
 table_id	Identifiant du tableau
 page_num	Numéro de page PDF
 row_index	Numéro de la ligne dans le tableau
-line_num	Numéro de ligne source, ici non disponible
+
 n_rows	Nombre de lignes de données du tableau
 n_cols	Nombre de colonnes
 column_headers	En-têtes des colonnes
@@ -122,12 +121,11 @@ def _make_chunk(
     table_id: str,
     page_num: int | None,
     row_index: int,
-    line_num: int | None,
     n_rows: int,
     headers: Sequence[str],
     cells: Sequence[str],
     caption: str = "",
-) -> dict[str, Any]:
+) -> dict[str, Any]:  # génère un enregistrement structuré pour chaque ligne
     n_cols = len(headers)  # Si on a trois en-têtes, on a trois colonnes
     padded = list(cells[:n_cols]) + [""] * max(
         0, n_cols - len(cells)
@@ -136,7 +134,6 @@ def _make_chunk(
         "table_id": table_id,
         "page_num": page_num,
         "row_index": row_index,
-        "line_num": line_num,
         "n_rows": n_rows,
         "n_cols": n_cols,
         "column_headers": list(headers),
@@ -208,7 +205,6 @@ def table_to_row_chunks(
             table_id=table_id,
             page_num=page_num,
             row_index=row_index,
-            line_num=None,
             n_rows=n_rows,
             headers=headers,
             cells=cells,

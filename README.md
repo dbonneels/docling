@@ -52,7 +52,6 @@ Options:
 | `table_id` | Table identifier within the document (`t1`, `t2`, ...). |
 | `page_num` | Page number of the table (1-based). |
 | `row_index` | Body-row index within the table (1-based). |
-| `line_num` | Kept for schema compatibility; always empty. |
 | `n_rows` | Number of body rows in the table. |
 | `n_cols` | Number of columns. |
 | `column_headers` | List of column labels. |

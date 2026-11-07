@@ -181,7 +181,7 @@ if pdf_path:
         jsonl_data = rows_df.to_json(orient="records", lines=True, force_ascii=False)
         with dl_container:
             st.download_button(
-                label="📥 Download JSONL",
+                label="💾 Download JSONL",
                 data=jsonl_data,
                 file_name=f"{pdf_path.stem}_rows.jsonl",
                 mime="application/jsonlines",

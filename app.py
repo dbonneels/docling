@@ -143,7 +143,7 @@ if pdf_path:
         selected_columns = st.multiselect(
             "Select columns to display:",
             options=rows_df.columns.tolist(),
-            default=["row_serialized"],
+            default=rows_df.columns.tolist(),
         )
 
         if selected_columns and not filtered_df.empty:

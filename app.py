@@ -140,10 +140,12 @@ if pdf_path:
 
         # Display Options
         st.subheader("Row Chunks Table")
+        display_columns = [col for col in rows_df.columns.tolist() if col != "line_num"]
+
         selected_columns = st.multiselect(
             "Select columns to display:",
-            options=rows_df.columns.tolist(),
-            default=rows_df.columns.tolist(),
+            options=display_columns,
+            default=display_columns,
         )
 
         if selected_columns and not filtered_df.empty:

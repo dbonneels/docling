@@ -1,5 +1,4 @@
 import html
-import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -62,34 +61,29 @@ st.markdown(
     "Column headers stay with the values so each row reads like a self-contained sentence."
 )
 
-# Sidebar - Settings & File Upload
+# Sidebar - Source PDF
+# Public demo: only the bundled samples are served; visitor uploads are disabled
+# to keep CPU/RAM usage predictable on the shared host.
 st.sidebar.header("Source PDF")
 sample_pdfs = {
     "Use sample PDF (report with captions)": Path("data/raw/report_with_captions.pdf"),
     "Use sample PDF (IPCC SPM)": Path("data/raw/IPCC_AR6_WGI_SPM-25-29.pdf"),
 }
 
-upload_option = st.sidebar.radio(
-    "Choose input source:",
-    tuple(sample_pdfs.keys()) + ("Upload your own PDF",),
+selected_sample = st.sidebar.radio(
+    "Choose sample PDF:",
+    tuple(sample_pdfs.keys()),
     index=0,
 )
 
 pdf_path = None
+sample_pdf = sample_pdfs[selected_sample]
 
-if upload_option in sample_pdfs:
-    sample_pdf = sample_pdfs[upload_option]
-    if sample_pdf.exists():
-        pdf_path = sample_pdf
-        st.sidebar.success(f"Using {sample_pdf.name}")
-    else:
-        st.sidebar.error("Sample PDF not found.")
+if sample_pdf.exists():
+    pdf_path = sample_pdf
+    st.sidebar.success(f"Using {sample_pdf.name}")
 else:
-    uploaded_file = st.sidebar.file_uploader("Upload a PDF file", type=["pdf"])
-    if uploaded_file is not None:
-        temp_dir = tempfile.mkdtemp()
-        pdf_path = Path(temp_dir) / uploaded_file.name
-        pdf_path.write_bytes(uploaded_file.read())
+    st.sidebar.error("Sample PDF not found.")
 
 if pdf_path is not None and pdf_path.exists():
     pdf_bytes = pdf_path.read_bytes()

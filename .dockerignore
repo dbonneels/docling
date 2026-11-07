@@ -1,0 +1,10 @@
+.git
+.gitignore
+uv.lock
+ipcc_report.md
+tests
+scripts
+test.py
+README.md
+model-cache
+__pycache__

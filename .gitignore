@@ -14,3 +14,6 @@ output/
 
 # Windows mark-of-the-web
 *:Zone.Identifier
+
+# Docling/HuggingFace model cache mounted into the container (~500 MB)
+model-cache/

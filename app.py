@@ -34,17 +34,16 @@ st.markdown(
         }
         .stApp input,
         .stApp textarea,
-        .stApp [data-baseweb="input"],
-        .stApp [data-baseweb="textarea"],
-        .stApp [data-baseweb="select"],
         .stApp [data-baseweb="input"] input,
         .stApp [data-baseweb="textarea"] textarea {
-            color: revert !important;
+            color: #ffffff !important;
+            background-color: #3a2e00 !important;
+            caret-color: #ffffff !important;
         }
         .stApp [data-baseweb="input"] *,
         .stApp [data-baseweb="textarea"] *,
         .stApp [data-baseweb="select"] * {
-            color: revert !important;
+            color: #ffffff !important;
         }
         [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
             color: #3a2e00 !important;
